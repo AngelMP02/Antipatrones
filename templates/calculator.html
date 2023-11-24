@@ -1,46 +1,40 @@
+<!-- templates/calculator.html -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora</title>
-   
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 
-    <h2>Calculadora</h2>
-    
-    <input type="text" id="expression" readonly>
-    
-    <table>
-        <tr>
-            <td><input type="button" value="7" onclick="addToExpression('7')"></td>
-            <td><input type="button" value="8" onclick="addToExpression('8')"></td>
-            <td><input type="button" value="9" onclick="addToExpression('9')"></td>
-            <td><input type="button" value="/" onclick="addToExpression('/')"></td>
-        </tr>
-        <tr>
-            <td><input type="button" value="4" onclick="addToExpression('4')"></td>
-            <td><input type="button" value="5" onclick="addToExpression('5')"></td>
-            <td><input type="button" value="6" onclick="addToExpression('6')"></td>
-            <td><input type="button" value="-" onclick="addToExpression('-')"></td>
-        </tr>
-        <tr>
-            <td><input type="button" value="1" onclick="addToExpression('1')"></td>
-            <td><input type="button" value="2" onclick="addToExpression('2')"></td>
-            <td><input type="button" value="3" onclick="addToExpression('3')"></td>
-            <td><input type="button" value="+" onclick="addToExpression('+')"></td>
-        </tr>
-        <tr>
-            <td><input type="button" value="0" onclick="addToExpression('0')"></td>
-            <td><input type="button" value="." onclick="addToExpression('.')"></td>
-            <td><input type="button" value="=" onclick="calculateExpression()"></td>
-            <td><input type="button" value="C" onclick="clearExpression()"></td>
-        </tr>
-    </table>
+    <div class="calculator">
+        <input type="text" id="expression" readonly>
+
+        <div class="keys">
+            <button class="operator" onclick="addToExpression('/')">/</button>
+            <button onclick="addToExpression('7')">7</button>
+            <button onclick="addToExpression('8')">8</button>
+            <button onclick="addToExpression('9')">9</button>
+            <button class="operator" onclick="addToExpression('*')">*</button>
+            <button onclick="addToExpression('4')">4</button>
+            <button onclick="addToExpression('5')">5</button>
+            <button onclick="addToExpression('6')">6</button>
+            <button class="operator" onclick="addToExpression('-')">-</button>
+            <button onclick="addToExpression('1')">1</button>
+            <button onclick="addToExpression('2')">2</button>
+            <button onclick="addToExpression('3')">3</button>
+            <button class="operator" onclick="addToExpression('+')">+</button>
+            <button onclick="addToExpression('0')">0</button>
+            <button onclick="clearExpression()">C</button>
+            <button onclick="calculateResult()">=</button>
+        </div>
+    </div>
 
     <script>
+        // Funciones JavaScript para manejar la calculadora
         function addToExpression(value) {
             document.getElementById('expression').value += value;
         }
@@ -49,23 +43,12 @@
             document.getElementById('expression').value = '';
         }
 
-        function calculateExpression() {
-            var expression = document.getElementById('expression').value;
-            fetch('/calculate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'expression=' + encodeURIComponent(expression),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if ('result' in data) {
-                    document.getElementById('expression').value = data.result;
-                } else if ('error' in data) {
-                    document.getElementById('expression').value = 'Error';
-                }
-            });
+        function calculateResult() {
+            try {
+                document.getElementById('expression').value = eval(document.getElementById('expression').value);
+            } catch (error) {
+                document.getElementById('expression').value = 'Error';
+            }
         }
     </script>
 
